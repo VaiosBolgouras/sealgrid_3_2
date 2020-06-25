@@ -1,51 +1,58 @@
-pragma solidity ^0.5.1;
+pragma solidity ^0.4.18;
 
 contract Sealgrid {
     
+    // node
     struct Node {
         uint id;
-        uint nodeAddress;
-        uint trusted; // admin signature
     }
     
-    uint[] trustedSigns;
-    uint adminSign = 12;
+    // mapping with all the nodes
+    mapping (address => Node) nodes;
     
-    
-    mapping (uint => Node) nodes;
-    uint count;
-    
-    // constructor
-    constructor () public {
-        for (uint i = 10; i < 20; i++){
-            addNodes(i);
-        }
-    }
+    // contains the adddresses of all the trusted nodes
+    // each node has this array
+    address[] public networkNodes;
     
     // add new node
-    function addNodes (uint _nodeAddress) public {
-        count++;
-        nodes[count] = Node(count, _nodeAddress, adminSign);
-        trustedSigns.push(_nodeAddress);
-    }
-      
-    //  get trusted node's signs
-    function getTrustedSigns () public view returns (uint[] memory) {
-        return trustedSigns;
+    function addNode (address _address, uint _id) public {
+        var node = nodes[_address];
+        
+        node.id = _id;
+        
+        networkNodes.push(_address) -1;
     }
     
-    // remove node 
-    function removeItem(uint index) public returns(uint[] memory) {
+    // get all nodes (addresses)
+    function getNodes () view public returns(address[]) {
+        return networkNodes;
+    }
+    
+    // get specific node
+    function getNode (address _address) view public returns (uint) {
+        return (nodes[_address].id);
+    }
+    
+    // search trusted node
+    function searchNode (address _address) view public returns (string) {
         
-        for (uint i = 0; i < trustedSigns.length-1; i++){
-            if (index == trustedSigns[i]) {
-                delete trustedSigns[i];
+        bool isTrusted;
+        
+        for (uint i = 0; i < networkNodes.length; i++) {
+            if (_address == networkNodes[i]) {
+                isTrusted = true;
+                break;
+            }
+            else {
+                isTrusted = false;
             }
         }
         
-        return trustedSigns;
-    }
-    
-    
+        if (isTrusted == true) {
+            return "Node is trusted";
+        }
+        else {
+            return "Not is untrusted";
+        }
+    } 
 }
-
